@@ -16,5 +16,15 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@nuxt/image"]
+  modules: ["@nuxt/image"],
+
+  app: {
+   head: {
+    title : "zormor app",
+    meta: [
+      {name: "description" , content: "everything about Zormor" }
+    ]
+   }
+  } 
+
 })
