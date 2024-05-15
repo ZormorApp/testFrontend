@@ -2,14 +2,12 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   alias: {
-    "@": "./"
+    "@": "./",
   },
   devServer: {
-    port: 3100
+    port: 3100,
   },
-  css: [
-    "./assets/css/main.css"
-  ],
+  css: ["./assets/css/main.css"],
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -19,12 +17,9 @@ export default defineNuxtConfig({
   modules: ["@nuxt/image"],
 
   app: {
-   head: {
-    title : "zormor app",
-    meta: [
-      {name: "description" , content: "everything about Zormor" }
-    ]
-   }
-  }
-
+    head: {
+      title: "zormor app",
+      meta: [{ name: "description", content: "everything about Zormor" }],
+    },
+  },
 })
