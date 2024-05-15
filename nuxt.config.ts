@@ -25,6 +25,6 @@ export default defineNuxtConfig({
       {name: "description" , content: "everything about Zormor" }
     ]
    }
-  } 
+  }
 
 })
