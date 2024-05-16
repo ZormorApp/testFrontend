@@ -1,5 +1,5 @@
 <template>
-  <div class="container">about page here</div>
+  <div class="container p-20">about page here</div>
 </template>
 
 <script setup></script>

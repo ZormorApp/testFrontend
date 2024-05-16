@@ -15,4 +15,12 @@ body {
   .btn{ 
     @apply bg-[#FFA500] w-full  rounded-md  p-3 mb-3   text-sm text-black outline-none;
   }
+  .btn2{ 
+    @apply bg-[#FFA500] w-40  rounded-md  p-3 mb-3   text-sm text-black outline-none;
+  }
+  .home{
+    @apply bg-fixed bg-right bg-no-repeat bg-cover  bg-[url('~/public/background.jpg')]   ;
+  }
 }
+
+/* bg-gradient-to-r from-gray-500 to-gray-500 */
