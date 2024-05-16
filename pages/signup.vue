@@ -15,6 +15,14 @@
   </template>
   
   <script setup>
+
+    useHead({
+    title: "zormor | sign-up",
+    meta: [
+        {name:"description",  content: "zormor sign up page"}
+    ]
+  })
+
 </script>
   
   <style scoped></style>
