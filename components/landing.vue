@@ -17,7 +17,7 @@
         >
 
         <NuxtLink
-          to="/all-places"
+          to="/zormor"
           class="btn2 inline-block hover:bg-orange-400 m-2 font-bold uppercase"
           >Browse Places</NuxtLink
         >
