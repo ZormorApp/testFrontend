@@ -5,21 +5,20 @@
 body {
   @apply bg-[#111111] text-white;
 
-
-  .card{
-    @apply    p-4 rounded-md bg-black text-white shadow-md ;
+  .card {
+    @apply p-4 rounded-md bg-black text-white shadow-md;
   }
-  .input{
+  .input {
     @apply w-full rounded-md mb-3  p-3 text-black outline-none;
   }
-  .btn{ 
+  .btn {
     @apply bg-[#FFA500] w-full  rounded-md  p-3 mb-3   text-sm text-black outline-none;
   }
-  .btn2{ 
+  .btn2 {
     @apply bg-[#FFA500] w-40  rounded-md  p-3 mb-3   text-sm text-black outline-none;
   }
-  .home{
-    @apply bg-fixed bg-right bg-no-repeat bg-cover  bg-[url('~/public/background.jpg')]   ;
+  .home {
+    @apply bg-fixed bg-right bg-no-repeat bg-cover  bg-[url('~/public/background.jpg')];
   }
 }
 
