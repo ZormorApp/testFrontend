@@ -149,4 +149,4 @@ export const PLACES_DB = [
     ],
     images: [],
   },
-];
+]

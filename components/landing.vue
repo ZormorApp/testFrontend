@@ -1,7 +1,7 @@
 <template>
-  <section class="flex-1 flex justify-center items-center home bg-gray-900 bg-opacity-50">
-    <div
-      class="w-screen flex justify-center items-center">
+  <section
+    class="flex-1 flex justify-center items-center home bg-gray-900 bg-opacity-50">
+    <div class="w-screen flex justify-center items-center">
       <div class="text-center cursor-pointer">
         <h1 class="text-6xl font-bold uppercase font-sans text-orange-500">
           welcome to Zormor

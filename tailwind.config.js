@@ -11,8 +11,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        "chrome-yellow": "#FFA500"
-      }
+        "chrome-yellow": "#FFA500",
+      },
     },
     container: {
       center: true,
