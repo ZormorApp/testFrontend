@@ -6,8 +6,12 @@
       <form class="grid gap-4">
         <div class="grid">
           <label class="mb-2 uppercase font-bold">Name</label>
-          <input class="input" type="text" placeholder="enter name of place" v-model="placeName" />
-          <ErrorMessage :message="errors.name"/>
+          <input
+            class="input"
+            type="text"
+            placeholder="enter name of place"
+            v-model="placeName" />
+          <ErrorMessage :message="errors.name" />
         </div>
 
         <div class="grid">
@@ -15,14 +19,19 @@
           <input
             class="input"
             type="text"
-            placeholder="enter place description" v-model="placeDescription" />
-            <ErrorMessage :message="errors.description"/>
+            placeholder="enter place description"
+            v-model="placeDescription" />
+          <ErrorMessage :message="errors.description" />
         </div>
 
         <div class="grid">
           <label class="mb-2 uppercase font-bold">Location</label>
-          <input class="input" type="text" placeholder="enter place location" v-model="placeLocation" />
-          <ErrorMessage :message="errors.location"/>
+          <input
+            class="input"
+            type="text"
+            placeholder="enter place location"
+            v-model="placeLocation" />
+          <ErrorMessage :message="errors.location" />
         </div>
 
         <!-- <label class="uppercase font-bold">Opening time</label>
@@ -39,42 +48,69 @@
             <p class="uppercase font-bold">Open Hours:</p>
 
             <div class="flex flex-wrap gap-x-4 gap-y-2">
-              <button v-for="item in DAYS_OF_WEEK" @click="() => handleDays(item)" :class="`w-12 p-2 aspect-square grid place-items-center rounded-full border-[1px] border-chrome-yellow hover:bg-chrome-yellow/30 capitalize text-sm ${usedDays.includes(item) ? 'bg-chrome-yellow text-black' : ''}`" type="button">
-                <span>{{item}}</span>
+              <button
+                v-for="item in DAYS_OF_WEEK"
+                @click="() => handleDays(item)"
+                :class="`w-12 p-2 aspect-square grid place-items-center rounded-full border-[1px] border-chrome-yellow hover:bg-chrome-yellow/30 capitalize text-sm ${usedDays.includes(item) ? 'bg-chrome-yellow text-black' : ''}`"
+                type="button">
+                <span>{{ item }}</span>
               </button>
             </div>
 
-            <div v-for="(item, index) in openPeriods" class="py-2 flex justify-between gap-2 border-b-[1px] border-chrome-yellow">
+            <div
+              v-for="(item, index) in openPeriods"
+              class="py-2 flex justify-between gap-2 border-b-[1px] border-chrome-yellow">
               <div class="flex-1 grid md:grid-cols-3 items-center gap-2">
                 <div class="grid grid-cols-2 gap-2">
                   <label for="start">Start:</label>
-                  <input type="time" @input="(e) => handlePeriod(e.target.value, 'start')" :value="item.start" class="bg-transparent outline-none text-white"/>
+                  <input
+                    type="time"
+                    @input="(e) => handlePeriod(e.target.value, 'start')"
+                    :value="item.start"
+                    class="bg-transparent outline-none text-white" />
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                   <label for="start">End:</label>
-                  <input type="time" @input="(e) => handlePeriod(e.target.value, 'end')" :value="item.end" class="bg-transparent outline-none text-white"/>
+                  <input
+                    type="time"
+                    @input="(e) => handlePeriod(e.target.value, 'end')"
+                    :value="item.end"
+                    class="bg-transparent outline-none text-white" />
                 </div>
 
                 <div class="capitalize">
-                  {{item.days.join(", ")}}
+                  {{ item.days.join(", ") }}
                 </div>
               </div>
 
-              <button v-if="openPeriods.length > 1" class="p-2 grid place-items-center" type="button" @click="() => deletePeriod(index)">
-                <img src="~/assets/images/trash-can.svg" width="16" alt="delete button" />
+              <button
+                v-if="openPeriods.length > 1"
+                class="p-2 grid place-items-center"
+                type="button"
+                @click="() => deletePeriod(index)">
+                <img
+                  src="~/assets/images/trash-can.svg"
+                  width="16"
+                  alt="delete button" />
               </button>
             </div>
 
-            <button type="button" :class="`p-2 w-max ${canAddPeriod} ? '' : 'hidden'`" @click="addNewPeriod">
-              <img src="~/assets/images/add.svg" width="16"/>
+            <button
+              type="button"
+              :class="`p-2 w-max ${canAddPeriod} ? '' : 'hidden'`"
+              @click="addNewPeriod">
+              <img src="~/assets/images/add.svg" width="16" />
             </button>
           </div>
 
-          <ErrorMessage :message="errors.openPeriods"/>
+          <ErrorMessage :message="errors.openPeriods" />
         </div>
 
-        <button type="button" class="btn hover:bg-orange-400 font-bold" @click="handleSubmit">
+        <button
+          type="button"
+          class="btn hover:bg-orange-400 font-bold"
+          @click="handleSubmit">
           Create
         </button>
       </form>
@@ -92,15 +128,13 @@ useHead({
 const placeName = ref("")
 const placeDescription = ref("")
 const placeLocation = ref("")
-const openPeriods = ref([
-  {days: [], start: '', end: ''}
-])
+const openPeriods = ref([{ days: [], start: "", end: "" }])
 
-const DAYS_OF_WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"];
+const DAYS_OF_WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
 
 const pointer = ref(0)
 
-const usedDays = ref(openPeriods.value.map(item => item.days).flat(1))
+const usedDays = ref(openPeriods.value.map((item) => item.days).flat(1))
 const canAddPeriod = ref(true)
 
 const handleDays = (day) => {
@@ -122,9 +156,9 @@ const handleDays = (day) => {
 }
 
 const handlePeriod = (value, type) => {
-  if (type === 'start') {
+  if (type === "start") {
     openPeriods.value[pointer.value].start = value
-  } else if (type === 'end') {
+  } else if (type === "end") {
     openPeriods.value[pointer.value].end = value
   }
 }
@@ -145,14 +179,14 @@ const addNewPeriod = () => {
     return
   }
   // cannot add if all days used up
-  if (DAYS_OF_WEEK.every(item => usedDays.value.includes(item))) {
+  if (DAYS_OF_WEEK.every((item) => usedDays.value.includes(item))) {
     canAddPeriod.value = false
     return
   }
   // adding should increase pointer
   canAddPeriod.value = true
   pointer.value += 1
-  openPeriods.value.push({days: [], start: '', end: ''})
+  openPeriods.value.push({ days: [], start: "", end: "" })
 }
 
 const deletePeriod = (index) => {
@@ -173,9 +207,9 @@ const errors = ref({
 
 const handleSubmit = () => {
   if (!handleErrors()) {
-    console.log('there are errors in your form')
+    console.log("there are errors in your form")
   } else {
-    console.log('no errors')
+    console.log("no errors")
   }
   // console.log(placeName.value)
 }
@@ -185,7 +219,7 @@ const handleErrors = () => {
   const name = placeName.value.trim()
   const description = placeDescription.value.trim()
   const location = placeLocation.value.trim()
-  
+
   if (!name) {
     errors.value.name = "Please enter a valid name"
     anyError = false
@@ -199,7 +233,7 @@ const handleErrors = () => {
   } else {
     errors.value.description = ""
   }
-  
+
   if (!location) {
     anyError = false
     errors.value.location = "Please enter a valid location"
@@ -207,25 +241,21 @@ const handleErrors = () => {
     errors.value.location = ""
   }
 
-  if (openPeriods.value.some(item => item.days.length === 0)) {
+  if (openPeriods.value.some((item) => item.days.length === 0)) {
     errors.value.openPeriods = "Please fill in the days"
     anyError = false
-  }
-  else if (openPeriods.value.some(item => item.start === "")) {
+  } else if (openPeriods.value.some((item) => item.start === "")) {
     errors.value.openPeriods = "Please add the start hours"
     anyError = false
-  }
-  else if (openPeriods.value.some(item => item.end === "")) {
+  } else if (openPeriods.value.some((item) => item.end === "")) {
     errors.value.openPeriods = "Please add the end hours"
     anyError = false
-  }
-  else {
+  } else {
     errors.value.openPeriods = ""
   }
 
   return anyError
 }
-
 </script>
 
 <style scoped></style>
