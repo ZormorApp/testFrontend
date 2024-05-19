@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.6",
     "@nuxt/image": "^1.7.0",
     "@pinia/nuxt": "^0.5.1",
     "nuxt": "^3.11.2",

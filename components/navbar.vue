@@ -52,7 +52,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="sticky top-0 shadow-sm bg-black h-30 w-full">
+  <header class="sticky top-0 z-[5] shadow-sm bg-black h-30 w-full">
     <nav class="container mx-auto p-4 flex items-center">
       <NuxtLink to="/">
         <NuxtImg height="8" src="/logo.svg" />
