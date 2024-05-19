@@ -36,7 +36,9 @@
 
         <div class="relative">
           <p class="mb-2 uppercase font-bold">Select location on map</p>
-          <div id="map" class="relative top-0 z-1 left-0 h-[300px] rounded-lg text-black font-bold"></div>
+          <div
+            id="map"
+            class="relative top-0 z-1 left-0 h-[300px] rounded-lg text-black font-bold"></div>
           <ErrorMessage :message="errors.location" />
         </div>
 
@@ -135,7 +137,7 @@ useHead({
 // form Data
 const placeName = ref("")
 const placeDescription = ref("")
-const placeLocation = ref({lat: "", long: ""})
+const placeLocation = ref({ lat: "", long: "" })
 const openPeriods = ref([{ days: [], start: "", end: "" }])
 
 const DAYS_OF_WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
@@ -218,7 +220,12 @@ const handleSubmit = () => {
     console.log("there are errors in your form")
   } else {
     console.log("no errors")
-    console.log(placeName.value, placeDescription.value, placeLocation.value, openPeriods.value)
+    console.log(
+      placeName.value,
+      placeDescription.value,
+      placeLocation.value,
+      openPeriods.value
+    )
   }
   // console.log(placeName.value)
 }
@@ -269,44 +276,42 @@ const handleErrors = () => {
 // location logic here
 const loader = new Loader({
   apiKey: "AIzaSyA4AFlUsM8oyxBokx6pMWhaLyj2BHMCMVY",
-  version: "weekly"
-});
+  version: "weekly",
+})
 
 loader.load().then(async () => {
-  const { Map } = await google.maps.importLibrary("maps");
-  const accra = {lat: 5.5593, lng: -0.1974}
+  const { Map } = await google.maps.importLibrary("maps")
+  const accra = { lat: 5.5593, lng: -0.1974 }
 
   let map = new Map(document.getElementById("map"), {
     center: accra,
     zoom: 8,
-  });
+  })
 
   let infoWindow = new google.maps.InfoWindow({
     content: "Click the map to get Lat/Lng!",
     position: accra,
-    color: "#000000"
-  });
+    color: "#000000",
+  })
 
-  infoWindow.open(map);
+  infoWindow.open(map)
 
-  map.addListener('click', event => {
+  map.addListener("click", (event) => {
     // Close the current InfoWindow.
-    infoWindow.close();
+    infoWindow.close()
     console.log(event.latLng.lng())
 
     // Create a new InfoWindow.
     infoWindow = new google.maps.InfoWindow({
       position: event.latLng,
-    });
-    infoWindow.setContent(
-      JSON.stringify(event.latLng.toJSON(), null, 2)
-    );
-    infoWindow.open(map);
+    })
+    infoWindow.setContent(JSON.stringify(event.latLng.toJSON(), null, 2))
+    infoWindow.open(map)
 
     placeLocation.value.lat = event.latLng.lat()
     placeLocation.value.long = event.latLng.lng()
   })
-});
+})
 </script>
 
 <style scoped></style>
