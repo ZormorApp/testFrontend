@@ -9,7 +9,11 @@ export default {
     "./error.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "chrome-yellow": "#FFA500"
+      }
+    },
     container: {
       center: true,
       padding: {
