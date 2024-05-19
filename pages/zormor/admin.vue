@@ -105,8 +105,9 @@
             </div>
 
             <button
+              v-if="canAddPeriod"
               type="button"
-              :class="`p-2 w-max ${canAddPeriod} ? '' : 'hidden'`"
+              class="p-2 w-max"
               @click="addNewPeriod">
               <img src="~/assets/images/add.svg" width="16" />
             </button>
@@ -140,28 +141,32 @@ const placeDescription = ref("")
 const placeLocation = ref({ lat: "", long: "" })
 const openPeriods = ref([{ days: [], start: "", end: "" }])
 
-const DAYS_OF_WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
+const errors = ref({
+  name: "",
+  description: "",
+  location: "",
+  openPeriods: "",
+})
 
+// points to current position of openPeriods that can be edited
 const pointer = ref(0)
 
-const usedDays = ref(openPeriods.value.map((item) => item.days).flat(1))
+const DAYS_OF_WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
+
+const usedDays = ref([])
 const canAddPeriod = ref(true)
 
 const handleDays = (day) => {
-  // get all days currently in openPeriods
-  // const usedDays = openPeriods.value.map(item => item.days).flat(1)
+  // if the selected day is not already in use, add it to the current days
   if (!usedDays.value.includes(day)) {
-    // if the selected day is not already in use, add it to the current days
     openPeriods.value[pointer.value].days.push(day)
-    usedDays.value.push(day)
-  } else if (openPeriods.value[pointer.value].days.includes(day)) {
-    // if the selected day is part of the currently active period, remove it
+  }
+  // if the selected day is part of the currently active period, remove it
+  else if (openPeriods.value[pointer.value].days.includes(day)) {
     const indexInPeriods = openPeriods.value[pointer.value].days.indexOf(day)
-    const indexInUsedDays = usedDays.value.indexOf(day)
 
     openPeriods.value[pointer.value].days.splice(indexInPeriods, 1)
-    usedDays.value.splice(indexInUsedDays, 1)
-    // canAddPeriod = true
+    canAddPeriod.value = true
   }
 }
 
@@ -174,27 +179,6 @@ const handlePeriod = (value, type) => {
 }
 
 const addNewPeriod = () => {
-  // cannot add more than 7
-  if (openPeriods.value.length >= 7) {
-    canAddPeriod.value = false
-    return
-  }
-  // cannot add if previous is not filled
-  // const allValues = Object.values(openPeriods.value[pointer.value])
-  const prevStart = openPeriods.value[pointer.value].start
-  const prevEnd = openPeriods.value[pointer.value].end
-  const prevDays = openPeriods.value[pointer.value].days
-  if (!prevStart || !prevEnd || prevDays.length === 0) {
-    canAddPeriod.value = false
-    return
-  }
-  // cannot add if all days used up
-  if (DAYS_OF_WEEK.every((item) => usedDays.value.includes(item))) {
-    canAddPeriod.value = false
-    return
-  }
-  // adding should increase pointer
-  canAddPeriod.value = true
   pointer.value += 1
   openPeriods.value.push({ days: [], start: "", end: "" })
 }
@@ -208,13 +192,7 @@ const deletePeriod = (index) => {
   }
 }
 
-const errors = ref({
-  name: "",
-  description: "",
-  location: "",
-  openPeriods: "",
-})
-
+// handle form submission
 const handleSubmit = () => {
   if (!handleErrors()) {
     console.log("there are errors in your form")
@@ -230,6 +208,7 @@ const handleSubmit = () => {
   // console.log(placeName.value)
 }
 
+// check for errors in form values
 const handleErrors = () => {
   let anyError = true
   const name = placeName.value.trim()
@@ -312,6 +291,38 @@ loader.load().then(async () => {
     placeLocation.value.long = event.latLng.lng()
   })
 })
+
+watch(
+  openPeriods,
+  (curr) => {
+    usedDays.value = curr.map((item) => item.days).flat(1)
+  },
+  { deep: true }
+)
+
+watch(
+  [usedDays, openPeriods],
+  () => {
+    const prevStart = openPeriods.value[pointer.value].start
+    const prevEnd = openPeriods.value[pointer.value].end
+    const prevDays = openPeriods.value[pointer.value].days
+    // cannot add if all days used up
+    if (DAYS_OF_WEEK.every((item) => usedDays.value.includes(item))) {
+      canAddPeriod.value = false
+    }
+    // cannot add if previous is not filled
+    else if (!prevStart || !prevEnd || prevDays.length === 0) {
+      canAddPeriod.value = false
+    }
+    // cannot add more than 7 since only 7 days in week
+    else if (openPeriods.value.length >= 7) {
+      canAddPeriod.value = false
+    } else {
+      canAddPeriod.value = true
+    }
+  },
+  { deep: true, immediate: true }
+)
 </script>
 
 <style scoped></style>
