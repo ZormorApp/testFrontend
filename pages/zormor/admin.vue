@@ -48,8 +48,11 @@
         <label class="uppercase font-bold">Closing time</label>
         <input class="input" type="time" placeholder="enter closing time" /> -->
 
-        <label class="uppercase font-bold">Image</label>
-        <input class="input" type="text" placeholder="enter place location" />
+        <div class="grid">
+          <label class="mb-2 uppercase font-bold">upload image(s)</label>
+          <input id="image" type="file" accept="image/png, image/jpg, image/jpeg" multiple @change.prevent="handleImages"/>
+          <!-- <input type="text" @change.prevent="handleImages"/> -->
+        </div>
 
         <div class="mb-4">
           <div class="flex flex-col gap-3">
@@ -140,6 +143,7 @@ const placeName = ref("")
 const placeDescription = ref("")
 const placeLocation = ref({ lat: "", long: "" })
 const openPeriods = ref([{ days: [], start: "", end: "" }])
+const images = ref([])
 
 const errors = ref({
   name: "",
@@ -192,20 +196,19 @@ const deletePeriod = (index) => {
   }
 }
 
-// handle form submission
-const handleSubmit = () => {
-  if (!handleErrors()) {
-    console.log("there are errors in your form")
-  } else {
-    console.log("no errors")
-    console.log(
-      placeName.value,
-      placeDescription.value,
-      placeLocation.value,
-      openPeriods.value
-    )
+const handleImages = e => {
+  const files = e.target.files
+  // console.log(files)
+
+  for (let i=0; i<files.length; i++) {
+    const reader = new FileReader()
+    reader.readAsDataURL(files[i])
+
+    reader.onload = e => {
+      // console.log(e.target.result)
+      images.value.push(e.target.result)
+    }
   }
-  // console.log(placeName.value)
 }
 
 // check for errors in form values
@@ -250,6 +253,22 @@ const handleErrors = () => {
   }
 
   return anyError
+}
+
+// handle form submission
+const handleSubmit = () => {
+  if (!handleErrors()) {
+    console.log("there are errors in your form")
+  } else {
+    console.log("no errors")
+    console.log(
+      placeName.value,
+      placeDescription.value,
+      placeLocation.value,
+      openPeriods.value,
+      images.value
+    )
+  }
 }
 
 // location logic here
