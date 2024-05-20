@@ -48,8 +48,11 @@
         <label class="uppercase font-bold">Closing time</label>
         <input class="input" type="time" placeholder="enter closing time" /> -->
 
-        <label class="uppercase font-bold">Image</label>
-        <input class="input" type="text" placeholder="enter place location" />
+        <div class="grid">
+          <label class="mb-2 uppercase font-bold">upload image(s)</label>
+          <input id="image" type="file" accept="image/png, image/jpg, image/jpeg" multiple @change.prevent="handleImages"/>
+          <!-- <input type="text" @change.prevent="handleImages"/> -->
+        </div>
 
         <div class="mb-4">
           <div class="flex flex-col gap-3">
@@ -138,8 +141,9 @@ useHead({
 // form Data
 const placeName = ref("")
 const placeDescription = ref("")
-const placeLocation = ref({ lat: "", long: "" })
+const placeLocation = ref({ lat: "", long: "", location: "" })
 const openPeriods = ref([{ days: [], start: "", end: "" }])
+const images = ref([])
 
 const errors = ref({
   name: "",
@@ -192,20 +196,19 @@ const deletePeriod = (index) => {
   }
 }
 
-// handle form submission
-const handleSubmit = () => {
-  if (!handleErrors()) {
-    console.log("there are errors in your form")
-  } else {
-    console.log("no errors")
-    console.log(
-      placeName.value,
-      placeDescription.value,
-      placeLocation.value,
-      openPeriods.value
-    )
+const handleImages = e => {
+  const files = e.target.files
+  // console.log(files)
+
+  for (let i=0; i<files.length; i++) {
+    const reader = new FileReader()
+    reader.readAsDataURL(files[i])
+
+    reader.onload = e => {
+      // console.log(e.target.result)
+      images.value.push(e.target.result)
+    }
   }
-  // console.log(placeName.value)
 }
 
 // check for errors in form values
@@ -252,6 +255,22 @@ const handleErrors = () => {
   return anyError
 }
 
+// handle form submission
+const handleSubmit = () => {
+  if (!handleErrors()) {
+    console.log("there are errors in your form")
+  } else {
+    console.log("no errors")
+    console.log(
+      placeName.value,
+      placeDescription.value,
+      placeLocation.value,
+      openPeriods.value,
+      images.value
+    )
+  }
+}
+
 // location logic here
 const loader = new Loader({
   apiKey: "AIzaSyA4AFlUsM8oyxBokx6pMWhaLyj2BHMCMVY",
@@ -260,6 +279,7 @@ const loader = new Loader({
 
 loader.load().then(async () => {
   const { Map } = await google.maps.importLibrary("maps")
+  const geocoder = await new google.maps.Geocoder();
   const accra = { lat: 5.5593, lng: -0.1974 }
 
   let map = new Map(document.getElementById("map"), {
@@ -278,17 +298,50 @@ loader.load().then(async () => {
   map.addListener("click", (event) => {
     // Close the current InfoWindow.
     infoWindow.close()
-    console.log(event.latLng.lng())
+    // console.log(event.latLng.lng())
+    const coordinates = {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng()
+    }
+    placeLocation.value.lat = coordinates.lat
+    placeLocation.value.long = coordinates.lng
 
     // Create a new InfoWindow.
     infoWindow = new google.maps.InfoWindow({
       position: event.latLng,
     })
-    infoWindow.setContent(JSON.stringify(event.latLng.toJSON(), null, 2))
-    infoWindow.open(map)
 
-    placeLocation.value.lat = event.latLng.lat()
-    placeLocation.value.long = event.latLng.lng()
+    geocoder
+    .geocode({ location: {lat: event.latLng.lat(), lng: event.latLng.lng()} })
+    .then(res => {
+      console.log(res)
+      const data = res.results
+      let address = ""
+
+      if (data[1]) {
+        address = data[1].formatted_address
+        console.log('res1')
+      } else {
+        address = data[0].formatted_address
+        console.log('res2')
+      }
+      infoWindow.setContent(`
+        <div class="text-center font-bold">
+          <p>${address}</p>
+          <p>lat: ${coordinates.lat}, long: ${coordinates.lng}</p>
+        </div>
+      `)
+      infoWindow.open(map)
+
+      placeLocation.value.location = address
+    })
+    .catch(err => {
+      console.log(err)
+      infoWindow.setContent(`
+        <p>Sorry cannot display location information right now</p>
+      `)
+      infoWindow.open(map)
+    })
   })
 })
 
