@@ -1,4 +1,5 @@
 <script setup>
+import { Loader } from "@googlemaps/js-api-loader"
 const route = useRoute()
 const placesStore = usePlacesStore()
 
@@ -38,8 +39,23 @@ const browse = (action) => {
       focusedImageIndex.value -= 1
     }
   }
-  // console.log(focusedImageIndex.value)
 }
+  // console.log(focusedImageIndex.value)
+
+const loader = new Loader({
+  apiKey: "AIzaSyA4AFlUsM8oyxBokx6pMWhaLyj2BHMCMVY",
+  version: "weekly",
+})
+
+loader.load().then(async () => {
+  const { Map } = await google.maps.importLibrary("maps")
+  const marker = { lat: place.latitude, lng: place.longitude }
+
+  new Map(document.getElementById("mark"), {
+    center: marker,
+    zoom: 8,
+  })
+})
 
 // console.log(typeof locationId, place)
 </script>
@@ -72,6 +88,13 @@ const browse = (action) => {
         <div class="flex gap-2">
           <img v-for="(item, index) in allImages.filter((elem, index) => index < 5)" :src="item" width="100" class="aspect-square object-cover" @click="() => handleImageFull('open', index)" />
         </div>
+      </div>
+
+      <div class="relative">
+        <p class="mb-2 uppercase font-bold">Location on Map:</p>
+        <div
+          id="mark"
+          class="relative top-0 left-0 h-[300px] rounded-lg"></div>
       </div>
     </div>
 

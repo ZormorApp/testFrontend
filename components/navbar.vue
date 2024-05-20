@@ -127,13 +127,13 @@ onUnmounted(() => {
   <!-- Side menu for small screens start -->
   <div
     v-if="sideMenuOpen"
-    class="fixed top-0 bottom-0 h-screen w-screen py-24 flex flex-col items-center">
+    class="fixed top-0 z-[50] bottom-0 h-screen w-screen py-24 flex flex-col items-center">
     <div
-      class="absolute top-0 bottom-0 z-10 h-full w-full backdrop-blur-sm"
+      class="absolute top-0 bottom-0 z-[51] h-full w-full backdrop-blur-sm"
       @click="sideMenuOpen = false"></div>
 
     <div
-      class="absolute top-0 right-0 z-20 py-4 px-2 w-[250px] h-full flex flex-col items-stretch bg-black gap-4">
+      class="absolute top-0 right-0 z-[52] py-4 px-2 w-[250px] h-full flex flex-col items-stretch bg-black gap-4">
       <button class="self-end" @click="sideMenuOpen = false">
         <img
           src="~/assets/images/close.svg"
