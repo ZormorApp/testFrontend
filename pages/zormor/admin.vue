@@ -205,7 +205,7 @@ const handleImages = e => {
     reader.readAsDataURL(files[i])
 
     reader.onload = e => {
-      // console.log(e.target.result)
+      console.log(e.target.result)
       images.value.push(e.target.result)
     }
   }
