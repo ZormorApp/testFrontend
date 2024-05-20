@@ -205,7 +205,7 @@ const handleImages = e => {
     reader.readAsDataURL(files[i])
 
     reader.onload = e => {
-      console.log(e.target.result)
+      // console.log(e.target.result)
       images.value.push(e.target.result)
     }
   }
@@ -256,11 +256,23 @@ const handleErrors = () => {
 }
 
 // handle form submission
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!handleErrors()) {
     console.log("there are errors in your form")
-  } else {
+  }
+  else {
+    const placesStore = usePlacesStore()
     console.log("no errors")
+    const payload = {
+      id: placesStore.numOfPlaces + 1,
+      name: placeName.value,
+      description: placeDescription.value,
+      location: placeLocation.value.location,
+      latitude: placeLocation.value.lat,
+      longitude: placeLocation.value.long,
+      openPeriods: openPeriods.value,
+      images: images.value
+    }
     console.log(
       placeName.value,
       placeDescription.value,
@@ -268,6 +280,62 @@ const handleSubmit = () => {
       openPeriods.value,
       images.value
     )
+    placesStore.addPlace(payload)
+    navigateTo('/zormor')
+
+
+
+    // const query = gql`
+    //   mutation CreatePlace ($input: PlaceDto!) {
+    //     createPlace (input: $input) {
+    //       name
+    //     }
+    //   }
+    // `
+    // const variables = {
+    //   name: placeName.value,
+    //   description: placeDescription.value,
+    //   location: placeLocation.value.location,
+    //   latitude: String(placeLocation.value.lat),
+    //   longitude: String(placeLocation.value.long),
+    //   hours: JSON.stringify(openPeriods.value),
+    //   locationImage: JSON.stringify(images.value)
+    // }
+    // const handler = useMutation(query, { variables })
+
+    // console.log(useMutation(query, { variables }))
+    // handler.mutate(variables)
+
+    // mutate.then(res => {
+    //   console.log('data sent successfully')
+    //   // navigateTo(`/zormor`)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
+    // const {data} = await mutate(variables)
+    // console.log(data)
+
+    // const query = gql`
+    //   mutation Create() {
+    //     createPlace(
+    //       name: placeName.value,
+    //       description: placeDescription.value,
+    //       location: placeLocation.value.location,
+    //       latitude: String(placeLocation.value.lat),
+    //       longitude: String(placeLocation.value.long),
+    //       hours: JSON.stringify(openPeriods.value),
+    //       locationImage = JSON.stringify(images.value)
+    //     ){}
+    //   }
+    
+    // `
+
+    // useAsyncQuery(query).then(res => {
+    //   console.log('data sent successfully')
+    //   navigateTo(`/zormor`)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
   }
 }
 

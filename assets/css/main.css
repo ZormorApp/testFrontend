@@ -9,7 +9,7 @@ body {
     @apply p-4 rounded-md bg-black text-white shadow-md;
   }
   .input {
-    @apply w-full rounded-md mb-3  p-3 text-white outline-none;
+    @apply w-full rounded-md mb-3  p-3 text-black outline-none;
   }
   .btn {
     @apply bg-[#FFA500] w-full  rounded-md  p-3 mb-3   text-sm text-black outline-none;

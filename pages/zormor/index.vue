@@ -1,7 +1,12 @@
 <script setup lang="ts">
+// import { readQuery } from '~/constants'
+
 const placesStore = usePlacesStore()
 
 const data = placesStore.allPlaces
+
+// const { data } = await useAsyncQuery(readQuery)
+// console.log(data, 1)
 
 const redirect = async (id: number) => {
   await navigateTo(`/zormor/${id}`)

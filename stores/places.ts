@@ -9,10 +9,11 @@ export const usePlacesStore = defineStore("placesStore", {
   }),
   getters: {
     allPlaces: (state) => state.data,
+    numOfPlaces: state => state.data.length
   },
-  // actions: {
-  //   fetch() {
-  //     this.data = PLACES_DB
-  //   }
-  // }
+  actions: {
+    addPlace(payload: unknown) {
+      this.data.push(payload)
+    },
+  }
 })
