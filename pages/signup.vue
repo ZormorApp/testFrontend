@@ -61,7 +61,10 @@ type Schema = z.output<typeof schema>
 
   async function onSubmit (event: FormSubmitEvent<Schema>) {
   console.log(event.data)
+  alert("you pressed button")
+  //the graphql sign up logic goes here
 }
+
 
 
 

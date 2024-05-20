@@ -14,7 +14,11 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@nuxt/image", "@pinia/nuxt", "@nuxt/ui", "@nuxt/ui"],
+  modules: ["@nuxt/image", "@pinia/nuxt", "@nuxt/ui" ],
+
+
+
+
 
   app: {
     head: {
