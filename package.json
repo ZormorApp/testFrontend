@@ -12,11 +12,13 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.6",
     "@nuxt/image": "^1.7.0",
+    "@nuxt/ui": "^2.16.0",
     "@pinia/nuxt": "^0.5.1",
     "nuxt": "^3.11.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.27",
-    "vue-router": "^4.3.2"
+    "vue-router": "^4.3.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
