@@ -1,5 +1,4 @@
 <script setup>
-import { readQuery } from '~/constants';
 const placesStore = usePlacesStore()
 const searchModalOpen = ref(false)
 const sideMenuOpen = ref(false)
