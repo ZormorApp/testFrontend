@@ -8,12 +8,45 @@ const place = placesStore.allPlaces.find(
   (item) => item.id === Number(locationId)
 )
 
-console.log(typeof locationId, place)
+const allImages = place.images
+const focusedImageIndex = ref(0)
+
+const showImageFull = ref(false)
+
+const handleImageFull = (action, index=0) => {
+  if (action === 'close') {
+    showImageFull.value = false
+  }
+  else if (action === 'open') {
+    showImageFull.value = true
+    focusedImageIndex.value = index
+  }
+}
+
+const browse = (action) => {
+  if (action === 'next') {
+    if (focusedImageIndex.value + 1 >= allImages.length) {
+      focusedImageIndex.value = 0
+    } else {
+      focusedImageIndex.value += 1
+    }
+  }
+  else if (action === 'prev') {
+    if (focusedImageIndex.value - 1 < 0) {
+      focusedImageIndex.value = allImages.length - 1
+    } else {
+      focusedImageIndex.value -= 1
+    }
+  }
+  // console.log(focusedImageIndex.value)
+}
+
+// console.log(typeof locationId, place)
 </script>
 
 <template>
   <div class="flex-1 container py-4">
-    <div v-if="place" class="flex flex-col gap-2">
+    <div v-if="place" class="flex flex-col gap-4">
       <div class="grid grid-cols-1 md:grid-cols-2 md:items-center">
         <p class="capitalize font-bold text-3xl">{{ place.name }}</p>
 
@@ -33,6 +66,13 @@ console.log(typeof locationId, place)
       </div>
 
       <p>{{ place.description }}</p>
+
+      <div v-if="allImages.length > 0">
+        <p class="font-bold">Image Gallery</p>
+        <div class="flex gap-2">
+          <img v-for="(item, index) in allImages.filter((elem, index) => index < 5)" :src="item" width="100" class="aspect-square object-cover" @click="() => handleImageFull('open', index)" />
+        </div>
+      </div>
     </div>
 
     <div
@@ -41,6 +81,22 @@ console.log(typeof locationId, place)
       <p class="text-5xl">Error</p>
 
       <p>Sorry the page you're looking for doesn't exist</p>
+    </div>
+
+    <div v-if="showImageFull" class="fixed z-[50] top-0 left-0 w-screen h-screen flex flex-col items-center justify-center backdrop-blur-md">
+      <div class="absolute z-[100] w-full h-full" @click="() => handleImageFull('close')"></div>
+
+      <div class="relative z-[101] container w-5/6 py-4 flex gap-2 items-stretch justify-center bg-white rounded-lg">
+        <button class="p-2 hover:bg-gray-300/50" @click="() => browse('prev')">
+          <img src="~/assets/images/nav.svg" width="16" class="rotate-180"/>
+        </button>
+
+        <img :src="allImages[focusedImageIndex]" class="self-center flex-1 min-w-0 object-contain"/>
+
+        <button class="p-2 hover:bg-gray-300/50" @click="() => browse('next')">
+          <img src="~/assets/images/nav.svg" width="16"/>
+        </button>
+      </div>
     </div>
   </div>
 </template>
