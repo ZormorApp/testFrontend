@@ -51,10 +51,21 @@ loader.load().then(async () => {
   const { Map } = await google.maps.importLibrary("maps")
   const marker = { lat: place.latitude, lng: place.longitude }
 
-  new Map(document.getElementById("mark"), {
+  const map= new Map(document.getElementById("mark"), {
     center: marker,
     zoom: 8,
   })
+  new google.maps.Marker({
+    position: marker,
+    map,
+  });
+
+  let infoWindow = new google.maps.InfoWindow({
+    content: `<p class="font-bold text-black capitalize">${place.name}</p>`,
+    position: marker
+  })
+
+  infoWindow.open(map)
 })
 
 // console.log(typeof locationId, place)
