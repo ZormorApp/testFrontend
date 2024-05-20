@@ -141,7 +141,7 @@ useHead({
 // form Data
 const placeName = ref("")
 const placeDescription = ref("")
-const placeLocation = ref({ lat: "", long: "" })
+const placeLocation = ref({ lat: "", long: "", location: "" })
 const openPeriods = ref([{ days: [], start: "", end: "" }])
 const images = ref([])
 
@@ -279,6 +279,7 @@ const loader = new Loader({
 
 loader.load().then(async () => {
   const { Map } = await google.maps.importLibrary("maps")
+  const geocoder = await new google.maps.Geocoder();
   const accra = { lat: 5.5593, lng: -0.1974 }
 
   let map = new Map(document.getElementById("map"), {
@@ -297,17 +298,50 @@ loader.load().then(async () => {
   map.addListener("click", (event) => {
     // Close the current InfoWindow.
     infoWindow.close()
-    console.log(event.latLng.lng())
+    // console.log(event.latLng.lng())
+    const coordinates = {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng()
+    }
+    placeLocation.value.lat = coordinates.lat
+    placeLocation.value.long = coordinates.lng
 
     // Create a new InfoWindow.
     infoWindow = new google.maps.InfoWindow({
       position: event.latLng,
     })
-    infoWindow.setContent(JSON.stringify(event.latLng.toJSON(), null, 2))
-    infoWindow.open(map)
 
-    placeLocation.value.lat = event.latLng.lat()
-    placeLocation.value.long = event.latLng.lng()
+    geocoder
+    .geocode({ location: {lat: event.latLng.lat(), lng: event.latLng.lng()} })
+    .then(res => {
+      console.log(res)
+      const data = res.results
+      let address = ""
+
+      if (data[1]) {
+        address = data[1].formatted_address
+        console.log('res1')
+      } else {
+        address = data[0].formatted_address
+        console.log('res2')
+      }
+      infoWindow.setContent(`
+        <div class="text-center font-bold">
+          <p>${address}</p>
+          <p>lat: ${coordinates.lat}, long: ${coordinates.lng}</p>
+        </div>
+      `)
+      infoWindow.open(map)
+
+      placeLocation.value.location = address
+    })
+    .catch(err => {
+      console.log(err)
+      infoWindow.setContent(`
+        <p>Sorry cannot display location information right now</p>
+      `)
+      infoWindow.open(map)
+    })
   })
 })
 
