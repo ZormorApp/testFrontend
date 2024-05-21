@@ -36,6 +36,7 @@
 <script setup lang="ts">
 import { z } from "zod"
 import type { FormSubmitEvent } from "#ui/types"
+import { SIGN_IN } from "~/constants";
 
 useHead({
   title: "zormor | sign-in",
@@ -55,7 +56,20 @@ const state = reactive({
 type Schema = z.output<typeof schema>
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data)
+  // console.log(event.data)
+  const email = event.data.email
+  const password = event.data.password
+  // console.log(typeof email, typeof password)
+
+  // make sign in request to database to see if user exists,
+  const {mutate} = useMutation(SIGN_IN(email, password))
+  // const response = data.value
+  const res = await mutate()
+  console.log(res)
+
+  // if exists get token and store in localstorage
+
+  // if not exists, alert user that email is invalid
 }
 </script>
 

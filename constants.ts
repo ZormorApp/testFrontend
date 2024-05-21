@@ -33,3 +33,14 @@ export const QUERY_GET_ONE = (id: number) => {
     }
   `
 }
+
+export const SIGN_IN = (email: string, password: string) => gql`
+  mutation {
+    login(loginUserInput: {
+      username: "${email}",
+      password: "${password}",
+    }){
+      access_token
+    }
+  }
+`
