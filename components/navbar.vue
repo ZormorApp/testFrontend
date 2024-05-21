@@ -1,15 +1,17 @@
 <script setup>
-const placesStore = usePlacesStore()
+import { QUERY_GET_ALL } from '~/constants';
+
+const {data} = await useAsyncQuery(QUERY_GET_ALL)
+const places = data.value.places
+
 const searchModalOpen = ref(false)
 const sideMenuOpen = ref(false)
-
-const data = placesStore.allPlaces
 
 const searchParam = ref("")
 
 // contains list of place names that match the search query
 const searchRes = computed(() =>
-  data.filter((item) => {
+places.filter((item) => {
     const cleanedInput = searchParam.value.trim().toLowerCase()
     return cleanedInput && item.name.toLowerCase().includes(cleanedInput)
   })
@@ -53,7 +55,7 @@ onUnmounted(() => {
 
 <template>
   <header class="sticky top-0 z-[5] shadow-sm bg-black h-30 w-full">
-    <nav class="container mx-auto p-4 flex items-center">
+    <nav class="container mx-auto py-4 flex items-center">
       <NuxtLink to="/">
         <NuxtImg height="8" src="/logo.svg" />
       </NuxtLink>

@@ -1,15 +1,15 @@
 <script setup>
 import { Loader } from "@googlemaps/js-api-loader"
+import { QUERY_GET_ONE } from "~/constants";
 const route = useRoute()
-const placesStore = usePlacesStore()
 
 const { locationId } = route.params
+const {data} = await useAsyncQuery(QUERY_GET_ONE(locationId))
 
-const place = placesStore.allPlaces.find(
-  (item) => item.id === Number(locationId)
-)
+const place = data.value.place
+console.log(place)
 
-const allImages = place.images
+const allImages = place.locationImage
 const focusedImageIndex = ref(0)
 
 const showImageFull = ref(false)
@@ -40,7 +40,7 @@ const browse = (action) => {
     }
   }
 }
-  // console.log(focusedImageIndex.value)
+// console.log(focusedImageIndex.value)
 
 const loader = new Loader({
   apiKey: "AIzaSyA4AFlUsM8oyxBokx6pMWhaLyj2BHMCMVY",
@@ -49,16 +49,18 @@ const loader = new Loader({
 
 loader.load().then(async () => {
   const { Map } = await google.maps.importLibrary("maps")
-  const marker = { lat: place.latitude, lng: place.longitude }
+  const marker = { lat: Number(place.latitude), lng: Number(place.longitude) }
 
-  const map= new Map(document.getElementById("mark"), {
+  const map = new Map(document.getElementById("mark"), {
     center: marker,
-    zoom: 8,
+    zoom: 15,
   })
-  new google.maps.Marker({
-    position: marker,
-    map,
-  });
+  // const pin = new google.maps.marker.AdvancedMarkerElement({
+  //     map,
+  //     position: marker,
+  //     title: place.name,
+  // });
+
 
   let infoWindow = new google.maps.InfoWindow({
     content: `<p class="font-bold text-black capitalize">${place.name}</p>`,
@@ -83,7 +85,7 @@ loader.load().then(async () => {
       </div>
 
       <div
-        v-for="period in place.openPeriods"
+        v-for="period in JSON.parse(place.hours)"
         class="grid grid-cols-2 font-bold">
         <p class="capitalize">{{ period.days.join(", ") }}</p>
 
@@ -94,7 +96,7 @@ loader.load().then(async () => {
 
       <p>{{ place.description }}</p>
 
-      <div v-if="allImages.length > 0">
+      <div v-if="allImages && allImages.length > 0">
         <p class="font-bold">Image Gallery</p>
         <div class="flex gap-2">
           <img v-for="(item, index) in allImages.filter((elem, index) => index < 5)" :src="item" width="100" class="aspect-square object-cover" @click="() => handleImageFull('open', index)" />

@@ -14,12 +14,20 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@nuxt/image", "@pinia/nuxt", "@nuxt/ui" ],
-
-
-
-
-
+  modules: [
+    "@nuxt/image",
+    "@pinia/nuxt",
+    "@nuxt/ui",
+    '@nuxtjs/apollo',
+    "nuxt-graphql-request"
+  ],
+  apollo: {
+    clients: {
+      default: {
+        httpEndpoint: 'https://testbackend-0wc0.onrender.com/graphql',
+      }
+    }
+  },
   app: {
     head: {
       title: "zormor app",
