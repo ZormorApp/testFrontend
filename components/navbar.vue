@@ -1,5 +1,8 @@
 <script setup>
 import { QUERY_GET_ALL } from "~/constants"
+const userStore = inject('userStore')
+
+// console.log(userStore.key.username)
 
 const { data } = await useAsyncQuery(QUERY_GET_ALL)
 const places = data.value.places
@@ -37,6 +40,30 @@ const handleSignUp = async () => {
   await navigateTo("/signup")
 }
 
+const handleSignIn = async () => {
+  sideMenuOpen.value = false
+  await navigateTo("/signin")
+}
+
+const handleSignOut = async () => {
+  sideMenuOpen.value = false
+  // clear localstorage user
+  userStore.clearKey()
+
+  const route = useRoute()
+  const {path} = route
+
+  if (path === "/zormor/admin") {
+    await navigateTo("/")
+  }
+  
+}
+
+const goToAddPage = async () => {
+  sideMenuOpen.value = false
+  await navigateTo("/zormor/admin")
+}
+
 // if window width becomes larger than 640px close the side menu
 const disableSideMenu = () => {
   if (window.innerWidth >= 640) {
@@ -70,11 +97,34 @@ onUnmounted(() => {
             width="16" />
         </button>
 
-        <div class="max-sm:hidden">
-          <NuxtLink to="/signup" class="font-bold btn m-2 uppercase"
-            >sign up</NuxtLink
-          >
+        <!-- show if no user is in localstorage -->
+        <div v-if="!userStore.key.id" class="max-sm:hidden flex items-center gap-x-2">
+          <NuxtLink to="/signup" class="p-3 font-bold rounded-lg bg-chrome-yellow uppercase whitespace-nowrap text-black text-sm">
+            sign up
+          </NuxtLink>
+
+          <NuxtLink
+            to="/signin"
+            class="p-3 font-bold rounded-lg bg-chrome-yellow uppercase whitespace-nowrap text-black text-sm">
+            sign in
+          </NuxtLink>
         </div>
+
+        <!-- else if user in storage and user is admin -->
+        <NuxtLink
+          v-else-if="userStore.key.id && userStore.key.role === 'ADMIN'"
+          to="/zormor/admin"
+          class="max-sm:hidden p-3 font-bold rounded-lg bg-chrome-yellow uppercase whitespace-nowrap text-black text-sm">
+          Add Place
+        </NuxtLink>
+
+        <!-- else if user in storage (so someone is logged in)-->
+        <button
+          v-if="userStore.key.id"
+          @click="handleSignOut"
+          class="max-sm:hidden p-3 font-bold rounded-lg bg-chrome-yellow uppercase whitespace-nowrap text-black text-sm">
+          sign out
+        </button>
 
         <button class="sm:hidden p-3" @click="sideMenuOpen = true">
           <img
@@ -148,11 +198,37 @@ onUnmounted(() => {
         Search
       </button>
 
-      <button
-        @click="handleSignUp"
-        class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
-        sign up
-      </button>
+      <!-- show these buttons if there is no user in localstorage -->
+        <button
+          v-if="!userStore.key.id"
+          @click="handleSignUp"
+          class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
+          sign up
+        </button>
+
+        
+        <button
+          v-if="!userStore.key.id"
+          @click="handleSignIn"
+          class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
+          sign in
+        </button>
+
+        <!-- else show logout -->
+        <button
+          v-else
+          @click="handleSignOut"
+          class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
+          sign out
+        </button>
+
+        <!-- if user in storage and user is admin -->
+        <button
+          v-if="userStore.key.id && userStore.key.role === 'ADMIN'"
+          @click="goToAddPage"
+          class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
+          Add Place
+        </button>
     </div>
   </div>
   <!-- Side menu for small screens end -->

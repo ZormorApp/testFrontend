@@ -1,5 +1,15 @@
 <template>
-  <div class="container py-4 flex justify-center items-center">
+  <!-- if no user in storage or the role of the user in storage of the is not admin show this div -->
+  <div
+    v-if="!userStore.key.id || userStore.key.role !== 'ADMIN'"
+    class="h-full flex flex-col justify-center items-center gap-4 text-center text-xl">
+    <p class="text-5xl">Error</p>
+
+    <p>Sorry the page you're looking for doesn't exist</p>
+  </div>
+
+  <!-- else show this -->
+  <div v-else class="container py-4 flex justify-center items-center">
     <div class="w-full">
       <h2 class="text-center uppercase font-bold">Create post</h2>
 
@@ -137,6 +147,8 @@
 
 <script setup>
 import { Loader } from "@googlemaps/js-api-loader"
+import { CREATE_PLACE } from "~/constants"
+const userStore = inject('userStore')
 
 useHead({
   title: "zormor | create",
@@ -265,27 +277,33 @@ const handleSubmit = async () => {
   if (!handleErrors()) {
     console.log("there are errors in your form")
   } else {
-    const placesStore = usePlacesStore()
+    // const placesStore = usePlacesStore()
     console.log("no errors")
     const payload = {
-      id: placesStore.numOfPlaces + 1,
-      name: placeName.value,
-      description: placeDescription.value,
-      location: placeLocation.value.location,
-      latitude: placeLocation.value.lat,
-      longitude: placeLocation.value.long,
-      openPeriods: openPeriods.value,
-      images: images.value,
+      locationName: `"${placeName.value.replaceAll('"', '\\"')}"`,
+      description: `"${placeDescription.value.replaceAll('"', '\\"')}"`,
+      location: `${placeLocation.value.location}`.replaceAll('"', '\\"'),
+      latitude: `${placeLocation.value.lat}`.replaceAll('"', '\\"'),
+      longitude: `${placeLocation.value.long}`.replaceAll('"', '\\"'),
+      openPeriods: JSON.stringify(openPeriods.value).replaceAll('"', '\\"'),
+      images: `${images.value}`.replaceAll('"', '\\"'),
     }
     console.log(
-      placeName.value,
-      placeDescription.value,
-      placeLocation.value,
-      openPeriods.value,
-      images.value
+      payload
+      // `"${"m".replace('"', '\\"')}"`,
+      // placeDescription.value,
+      // JSON.stringify(placeLocation.value.location),
+      // JSON.stringify(placeLocation.value.lat),
+      // JSON.stringify(placeLocation.value.long),
+      // JSON.stringify(openPeriods.value),
+      // JSON.stringify(images.value)
     )
-    placesStore.addPlace(payload)
-    navigateTo("/zormor")
+    // placesStore.addPlace(payload)
+    const {mutate} = useMutation(CREATE_PLACE({payload}))
+    // const response = data.value
+    const res = await mutate()
+    console.log(res)
+    // navigateTo("/zormor")
 
     // const query = gql`
     //   mutation CreatePlace ($input: PlaceDto!) {

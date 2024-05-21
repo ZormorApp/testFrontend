@@ -25,7 +25,7 @@ const redirect = async (id: number) => {
 </script>
 
 <template>
-  <div class="flex-1 py-4 container h-auto min-h-screen grid gap-4 text-white">
+  <div class="flex-1 py-4 container h-auto min-h-screen flex flex-col items-stretch gap-4 text-white">
     <div
       v-for="item in places"
       class="p-4 border-[1px] border-amber-300 rounded-lg hover:shadow-md hover:shadow-amber-200 hover:cursor-pointer"
