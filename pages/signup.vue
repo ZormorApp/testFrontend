@@ -15,6 +15,12 @@
           class="input"
           type="password"
           placeholder="enter your password" />
+          <select 
+          class="input" 
+          v-model="state.role" >
+            <option value="admin">admin</option>
+            <option value="user">user</option>
+          </select>
         <button type="submit" class="btn hover:bg-orange-400 font-bold">
           Sign up
         </button>
@@ -36,6 +42,7 @@
 <script setup lang="ts">
 import { z } from "zod"
 import type { FormSubmitEvent } from "#ui/types"
+import { SIGN_UP } from "~/constants";
 
 useHead({
   title: "zormor | sign-up",
@@ -45,20 +52,38 @@ useHead({
 const schema = z.object({
   email: z.string().email("invalid email"),
   password: z.string().min(8, "must be at least 8 characters"),
+  role: z.string().min(1,"choose one")
 })
 
 const state = reactive({
   email: undefined,
   password: undefined,
+  role: undefined
 })
+
 
 type Schema = z.output<typeof schema>
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data)
-  alert("you pressed button")
-  //the graphql sign up logic goes here
+  // console.log(event.data)
+  const email = event.data.email
+  const password = event.data.password
+  const role = event.data.role
+  // console.log(typeof email, typeof password)
+
+  // make sign in request to database to see if user exists,
+  const {mutate} = useMutation(SIGN_UP(email, password, role))
+  // const response = data.value
+  const res = await mutate()
+  console.log(res)
+
+  // if exists get token and store in localstorage
+
+  // if not exists, alert user that email is invalid
+
+  //note: the select option role is not passed
 }
+
 </script>
 
 <style scoped></style>

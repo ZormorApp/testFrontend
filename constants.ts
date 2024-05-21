@@ -40,7 +40,23 @@ export const SIGN_IN = (email: string, password: string) => gql`
       username: "${email}",
       password: "${password}",
     }){
-      access_token
+      access_token,
+      user{
+        username,
+        role
+      }
+    }
+  }
+`
+
+
+export const SIGN_UP = ( email: string, password: string) => gql`
+  mutation {
+    signup(loginUserInput: {
+      username: "${email}",
+      password: "${password}",
+    }){
+      username,
     }
   }
 `
