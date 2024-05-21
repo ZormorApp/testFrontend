@@ -50,7 +50,12 @@
 
         <div class="grid">
           <label class="mb-2 uppercase font-bold">upload image(s)</label>
-          <input id="image" type="file" accept="image/png, image/jpg, image/jpeg" multiple @change.prevent="handleImages"/>
+          <input
+            id="image"
+            type="file"
+            accept="image/png, image/jpg, image/jpeg"
+            multiple
+            @change.prevent="handleImages" />
           <!-- <input type="text" @change.prevent="handleImages"/> -->
         </div>
 
@@ -196,15 +201,15 @@ const deletePeriod = (index) => {
   }
 }
 
-const handleImages = e => {
+const handleImages = (e) => {
   const files = e.target.files
   // console.log(files)
 
-  for (let i=0; i<files.length; i++) {
+  for (let i = 0; i < files.length; i++) {
     const reader = new FileReader()
     reader.readAsDataURL(files[i])
 
-    reader.onload = e => {
+    reader.onload = (e) => {
       // console.log(e.target.result)
       images.value.push(e.target.result)
     }
@@ -259,8 +264,7 @@ const handleErrors = () => {
 const handleSubmit = async () => {
   if (!handleErrors()) {
     console.log("there are errors in your form")
-  }
-  else {
+  } else {
     const placesStore = usePlacesStore()
     console.log("no errors")
     const payload = {
@@ -271,7 +275,7 @@ const handleSubmit = async () => {
       latitude: placeLocation.value.lat,
       longitude: placeLocation.value.long,
       openPeriods: openPeriods.value,
-      images: images.value
+      images: images.value,
     }
     console.log(
       placeName.value,
@@ -281,9 +285,7 @@ const handleSubmit = async () => {
       images.value
     )
     placesStore.addPlace(payload)
-    navigateTo('/zormor')
-
-
+    navigateTo("/zormor")
 
     // const query = gql`
     //   mutation CreatePlace ($input: PlaceDto!) {
@@ -327,7 +329,7 @@ const handleSubmit = async () => {
     //       locationImage = JSON.stringify(images.value)
     //     ){}
     //   }
-    
+
     // `
 
     // useAsyncQuery(query).then(res => {
@@ -347,7 +349,7 @@ const loader = new Loader({
 
 loader.load().then(async () => {
   const { Map } = await google.maps.importLibrary("maps")
-  const geocoder = await new google.maps.Geocoder();
+  const geocoder = await new google.maps.Geocoder()
   const accra = { lat: 5.5593, lng: -0.1974 }
 
   let map = new Map(document.getElementById("map"), {
@@ -369,7 +371,7 @@ loader.load().then(async () => {
     // console.log(event.latLng.lng())
     const coordinates = {
       lat: event.latLng.lat(),
-      lng: event.latLng.lng()
+      lng: event.latLng.lng(),
     }
     placeLocation.value.lat = coordinates.lat
     placeLocation.value.long = coordinates.lng
@@ -380,36 +382,38 @@ loader.load().then(async () => {
     })
 
     geocoder
-    .geocode({ location: {lat: event.latLng.lat(), lng: event.latLng.lng()} })
-    .then(res => {
-      console.log(res)
-      const data = res.results
-      let address = ""
+      .geocode({
+        location: { lat: event.latLng.lat(), lng: event.latLng.lng() },
+      })
+      .then((res) => {
+        console.log(res)
+        const data = res.results
+        let address = ""
 
-      if (data[1]) {
-        address = data[1].formatted_address
-        console.log('res1')
-      } else {
-        address = data[0].formatted_address
-        console.log('res2')
-      }
-      infoWindow.setContent(`
+        if (data[1]) {
+          address = data[1].formatted_address
+          console.log("res1")
+        } else {
+          address = data[0].formatted_address
+          console.log("res2")
+        }
+        infoWindow.setContent(`
         <div class="text-center font-bold">
           <p>${address}</p>
           <p>lat: ${coordinates.lat}, long: ${coordinates.lng}</p>
         </div>
       `)
-      infoWindow.open(map)
+        infoWindow.open(map)
 
-      placeLocation.value.location = address
-    })
-    .catch(err => {
-      console.log(err)
-      infoWindow.setContent(`
+        placeLocation.value.location = address
+      })
+      .catch((err) => {
+        console.log(err)
+        infoWindow.setContent(`
         <p>Sorry cannot display location information right now</p>
       `)
-      infoWindow.open(map)
-    })
+        infoWindow.open(map)
+      })
   })
 })
 

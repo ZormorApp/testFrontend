@@ -18,15 +18,15 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@pinia/nuxt",
     "@nuxt/ui",
-    '@nuxtjs/apollo',
-    "nuxt-graphql-request"
+    "@nuxtjs/apollo",
+    "nuxt-graphql-request",
   ],
   apollo: {
     clients: {
       default: {
-        httpEndpoint: 'https://testbackend-0wc0.onrender.com/graphql',
-      }
-    }
+        httpEndpoint: "https://testbackend-0wc0.onrender.com/graphql",
+      },
+    },
   },
   app: {
     head: {

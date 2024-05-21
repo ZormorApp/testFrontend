@@ -1,7 +1,7 @@
 <script setup>
-import { QUERY_GET_ALL } from '~/constants';
+import { QUERY_GET_ALL } from "~/constants"
 
-const {data} = await useAsyncQuery(QUERY_GET_ALL)
+const { data } = await useAsyncQuery(QUERY_GET_ALL)
 const places = data.value.places
 
 const searchModalOpen = ref(false)
@@ -11,7 +11,7 @@ const searchParam = ref("")
 
 // contains list of place names that match the search query
 const searchRes = computed(() =>
-places.filter((item) => {
+  places.filter((item) => {
     const cleanedInput = searchParam.value.trim().toLowerCase()
     return cleanedInput && item.name.toLowerCase().includes(cleanedInput)
   })

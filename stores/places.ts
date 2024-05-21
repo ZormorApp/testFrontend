@@ -1,13 +1,17 @@
 import { defineStore } from "pinia"
 import { QUERY_GET_ALL, QUERY_GET_ONE } from "~/constants"
 import { PLACES_DB } from "~/data/mock-db"
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client/core'
+import {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client/core"
 import { provideApolloClient, useQuery } from "@vue/apollo-composable"
 import { gql } from "graphql-tag"
 // import { useQuery } from "@apollo/client"
 
 const httpLink = createHttpLink({
-  uri: 'https://testbackend-0wc0.onrender.com/graphql',
+  uri: "https://testbackend-0wc0.onrender.com/graphql",
 })
 
 const cache = new InMemoryCache()
@@ -28,7 +32,9 @@ export const usePlacesStore = defineStore("placesStore", () => {
 
   function fetchAll() {
     // const infos = await useAsyncQuery(QUERY_GET_ALL)
-    const query = provideApolloClient(apolloClient)(() => useQuery(QUERY_GET_ALL))
+    const query = provideApolloClient(apolloClient)(() =>
+      useQuery(QUERY_GET_ALL)
+    )
     // return query
     const res = computed(() => query.result.value)
     data.value = res
@@ -42,7 +48,7 @@ export const usePlacesStore = defineStore("placesStore", () => {
     return data
   }
 
-  return {name, description, data, getAllData, fetchOne, fetchAll}
+  return { name, description, data, getAllData, fetchOne, fetchAll }
   // state: () => ({
   //   name: "Places Database",
   //   description: "Mock database for holding information about all places",

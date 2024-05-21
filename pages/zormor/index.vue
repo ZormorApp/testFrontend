@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { QUERY_GET_ALL } from '~/constants';
+import { QUERY_GET_ALL } from "~/constants"
 
 // const placesStore = usePlacesStore()
 // placesStore.fetchAll()
@@ -7,10 +7,9 @@ import { QUERY_GET_ALL } from '~/constants';
 // const data = placesStore.getAllData
 // console.log(data.places)
 
-
-const {data} = await useAsyncQuery(QUERY_GET_ALL)
+const { data } = await useAsyncQuery(QUERY_GET_ALL)
 const places = data.value.places
-console.log(places);
+console.log(places)
 // const fromDb = placesStore.fetch()
 // console.log(fromDb)
 
