@@ -9,7 +9,7 @@ const { data } = await useAsyncQuery(QUERY_GET_ONE(locationId))
 const place = data.value.place
 console.log(place)
 
-const allImages = place.locationImage
+const allImages = place.locationImage ? JSON.parse(place.locationImage) : []
 const focusedImageIndex = ref(0)
 
 const showImageFull = ref(false)

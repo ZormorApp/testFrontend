@@ -1,7 +1,7 @@
 <template>
   <!-- if no user in storage or the role of the user in storage of the is not admin show this div -->
   <div
-    v-if="!userStore.key.id || userStore.key.role !== 'ADMIN'"
+    v-if="!storageUser.id || storageUser.role !== 'ADMIN'"
     class="h-full flex flex-col justify-center items-center gap-4 text-center text-xl">
     <p class="text-5xl">Error</p>
 
@@ -17,7 +17,7 @@
         <div class="grid">
           <label class="mb-2 uppercase font-bold">Name</label>
           <input
-            class="input"
+            class="w-full rounded-md p-3 text-black outline-none"
             type="text"
             placeholder="enter name of place"
             v-model="placeName" />
@@ -27,7 +27,7 @@
         <div class="grid">
           <label class="mb-2 uppercase font-bold">Description</label>
           <input
-            class="input"
+            class="w-full rounded-md p-3 text-black outline-none"
             type="text"
             placeholder="enter place description"
             v-model="placeDescription" />
@@ -147,8 +147,10 @@
 
 <script setup>
 import { Loader } from "@googlemaps/js-api-loader"
-import { CREATE_PLACE } from "~/constants"
-const userStore = inject('userStore')
+import { CREATE_PLACE, SIGN_IN } from "~/constants"
+// const userStore = inject('userStore')
+const storageUser = ref(JSON.parse(localStorage.getItem('user')))
+
 
 useHead({
   title: "zormor | create",
@@ -280,16 +282,22 @@ const handleSubmit = async () => {
     // const placesStore = usePlacesStore()
     console.log("no errors")
     const payload = {
-      locationName: `"${placeName.value.replaceAll('"', '\\"')}"`,
-      description: `"${placeDescription.value.replaceAll('"', '\\"')}"`,
-      location: `${placeLocation.value.location}`.replaceAll('"', '\\"'),
-      latitude: `${placeLocation.value.lat}`.replaceAll('"', '\\"'),
-      longitude: `${placeLocation.value.long}`.replaceAll('"', '\\"'),
-      openPeriods: JSON.stringify(openPeriods.value).replaceAll('"', '\\"'),
-      images: `${images.value}`.replaceAll('"', '\\"'),
+      locationName: `${placeName.value.replaceAll('"', '\\"')}`,
+      description: `${placeDescription.value.replaceAll('"', '\\"')}`,
+      location: `${placeLocation.value.location.replaceAll('"', '\\"')}`,
+      latitude: `${JSON.stringify(placeLocation.value.lat).replaceAll('"', '\\"')}`,
+      longitude: `${JSON.stringify(placeLocation.value.long).replaceAll('"', '\\"')}`,
+      openPeriods: `${JSON.stringify(openPeriods.value).replaceAll('"', '\\"')}`,
+      images: `${JSON.stringify(images.value).replaceAll('"', '\\"')}`,
     }
     console.log(
-      payload
+      payload.locationName,
+      payload.description,
+      payload.location,
+      payload.latitude,
+      payload.longitude,
+      payload.openPeriods,
+      payload.images
       // `"${"m".replace('"', '\\"')}"`,
       // placeDescription.value,
       // JSON.stringify(placeLocation.value.location),
@@ -299,10 +307,23 @@ const handleSubmit = async () => {
       // JSON.stringify(images.value)
     )
     // placesStore.addPlace(payload)
-    const {mutate} = useMutation(CREATE_PLACE({payload}))
-    // const response = data.value
-    const res = await mutate()
-    console.log(res)
+    try {
+      const {mutate} = useMutation(CREATE_PLACE(payload), {
+        context: {
+          headers: {
+            "Authorization" :"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInN1YiI6ImQ0Y2RiMTJlLTVjZWUtNDhmYy05MDQ4LWQxYzAxYmQzN2JjYSIsImlhdCI6MTcxNjMxNDE5NiwiZXhwIjoxNzE2MzUwMTk2fQ.Sja4Fu27Yghf5Qm1h-Il3RgT7YsG6hXxWbIcLsRT8fU"
+          }
+        }
+      })
+      // const response = data.value
+      // const {mutate} = useMutation(SIGN_IN("david@gmail.com", "davidpassword"))
+      const res = await mutate()
+      console.log(res)
+    } catch (err) {
+      console.log(err)
+    }
+    
+    // console.log(res)
     // navigateTo("/zormor")
 
     // const query = gql`

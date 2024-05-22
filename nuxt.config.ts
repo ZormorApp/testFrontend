@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     "@nuxtjs/apollo",
     "nuxt-graphql-request",
   ],
+  ssr: false,
   apollo: {
     clients: {
       default: {

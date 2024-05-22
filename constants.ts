@@ -78,13 +78,13 @@ type CREATE_PLACE = {
 export const CREATE_PLACE = ({locationName, location, description, latitude, longitude, openPeriods, images}: CREATE_PLACE) => gql`
   mutation {
     createPlace(createPlaceInput: {
-      name: ${locationName},
-      location: ${location},
-      latitude: ${latitude},
-      longitude: ${longitude},
-      description: ${description},
-      hours: ${openPeriods},
-      locationImage: ${images}
+      name: "${locationName}",
+      location: "${location}",
+      latitude: "${latitude}",
+      longitude: "${longitude}",
+      description: "${description}",
+      hours: "${openPeriods}",
+      locationImage: "${images}"
     }) {
       id
       name

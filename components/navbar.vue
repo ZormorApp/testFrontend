@@ -1,8 +1,9 @@
 <script setup>
 import { QUERY_GET_ALL } from "~/constants"
-const userStore = inject('userStore')
+// const userStore = inject('userStore')
+const storageUser = ref(JSON.parse(localStorage.getItem('user')))
 
-// console.log(userStore.key.username)
+console.log('in navbar', storageUser.value)
 
 const { data } = await useAsyncQuery(QUERY_GET_ALL)
 const places = data.value.places
@@ -47,8 +48,15 @@ const handleSignIn = async () => {
 
 const handleSignOut = async () => {
   sideMenuOpen.value = false
+
   // clear localstorage user
-  userStore.clearKey()
+  for (const prop in storageUser.value) {
+    // console.log(prop)
+    if (storageUser.value.hasOwnProperty(prop)) {
+      storageUser.value[prop] = ""
+    }
+  }
+  localStorage.setItem('user', JSON.stringify(storageUser.value))
 
   const route = useRoute()
   const {path} = route
@@ -56,7 +64,6 @@ const handleSignOut = async () => {
   if (path === "/zormor/admin") {
     await navigateTo("/")
   }
-  
 }
 
 const goToAddPage = async () => {
@@ -98,7 +105,7 @@ onUnmounted(() => {
         </button>
 
         <!-- show if no user is in localstorage -->
-        <div v-if="!userStore.key.id" class="max-sm:hidden flex items-center gap-x-2">
+        <div v-if="!storageUser.id" class="max-sm:hidden flex items-center gap-x-2">
           <NuxtLink to="/signup" class="p-3 font-bold rounded-lg bg-chrome-yellow uppercase whitespace-nowrap text-black text-sm">
             sign up
           </NuxtLink>
@@ -112,7 +119,7 @@ onUnmounted(() => {
 
         <!-- else if user in storage and user is admin -->
         <NuxtLink
-          v-else-if="userStore.key.id && userStore.key.role === 'ADMIN'"
+          v-else-if="storageUser.id && storageUser.role === 'ADMIN'"
           to="/zormor/admin"
           class="max-sm:hidden p-3 font-bold rounded-lg bg-chrome-yellow uppercase whitespace-nowrap text-black text-sm">
           Add Place
@@ -120,7 +127,7 @@ onUnmounted(() => {
 
         <!-- else if user in storage (so someone is logged in)-->
         <button
-          v-if="userStore.key.id"
+          v-if="storageUser.id"
           @click="handleSignOut"
           class="max-sm:hidden p-3 font-bold rounded-lg bg-chrome-yellow uppercase whitespace-nowrap text-black text-sm">
           sign out
@@ -200,7 +207,7 @@ onUnmounted(() => {
 
       <!-- show these buttons if there is no user in localstorage -->
         <button
-          v-if="!userStore.key.id"
+          v-if="!storageUser.id"
           @click="handleSignUp"
           class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
           sign up
@@ -208,7 +215,7 @@ onUnmounted(() => {
 
         
         <button
-          v-if="!userStore.key.id"
+          v-if="!storageUser.id"
           @click="handleSignIn"
           class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
           sign in
@@ -224,7 +231,7 @@ onUnmounted(() => {
 
         <!-- if user in storage and user is admin -->
         <button
-          v-if="userStore.key.id && userStore.key.role === 'ADMIN'"
+          v-if="storageUser.id && storageUser.role === 'ADMIN'"
           @click="goToAddPage"
           class="p-3 bg-chrome-yellow uppercase rounded-lg text-black font-bold">
           Add Place
