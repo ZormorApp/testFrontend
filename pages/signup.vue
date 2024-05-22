@@ -15,6 +15,7 @@
           class="input"
           type="password"
           placeholder="enter your password" />
+        <ErrorMessage :message="errorMsg"/>
         <button type="submit" class="btn hover:bg-orange-400 font-bold">
           Sign up
         </button>
@@ -36,8 +37,9 @@
 <script setup lang="ts">
 import { z } from "zod"
 import type { FormSubmitEvent } from "#ui/types"
-import { SIGN_UP } from "~/constants";
+import { SIGN_IN, SIGN_UP } from "~/constants";
 
+const errorMsg = ref("")
 
 useHead({
   title: "zormor | sign-up",
@@ -64,10 +66,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   // console.log(typeof email, typeof password)
 
   // make sign in request to database to see if user exists,
-  const {mutate} = useMutation(SIGN_UP(email, password))
+  // const res = useMutation(SIGN_UP(email, password))
   // const response = data.value
-  const res = await mutate()
-  console.log(res)
+  // const res = await mutate()
+  // console.log(res)
   // this.$router.push('/zormor')
 
   // if exists get token and store in localstorage
@@ -77,6 +79,44 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   //note: the select option role is not passed
   // Define the sign-in mutation
 
+  try {
+    const {mutate} = useMutation(SIGN_UP(email, password))
+    const signUpPromise = mutate()
+    // mutate().then(res => {
+    //   console.log(res)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
+    signUpPromise.then(res => {
+      console.log(res)
+      const {mutate} = useMutation(SIGN_IN(email, password)) 
+      const signInPromise = mutate()
+
+      signInPromise.then(async (signInRes: any) => {
+        const user = {
+          access_token:  signInRes.data.login.access_token,
+          username:  signInRes.data.login.user.username,
+          role:  signInRes.data.login.user.role,
+          id:  signInRes.data.login.user.id,
+        }
+        localStorage.setItem('user', JSON.stringify(user))
+        console.log("Sign in successful")
+        reloadNuxtApp({path: '/zormor'})
+      })
+      .catch((signInErr: any) => {
+        console.log(signInErr.message)
+        console.log("Sorry, something went wrong signing you in. Please try again later")
+      })
+
+    })
+    .catch(err => {
+      console.log(err.message)
+      errorMsg.value = err.message
+    })
+    // console.log(res)
+  } catch(err) {
+    console.log(err)
+  }
 
 
 
