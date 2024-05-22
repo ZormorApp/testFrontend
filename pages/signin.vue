@@ -2,7 +2,7 @@
   <div class="flex-1 container flex justify-center items-center h-screen">
     <div class="card">
       <h2 class="text-center uppercase font-bold">sign in</h2>
-      <UForm :state="state" :schema="schema" @submit="onSubmit">
+      <UForm POSt="/zormor" :state="state" :schema="schema" @submit="onSubmit">
         <label class="uppercase font-bold">Email</label>
         <input
           v-model="state.email"
@@ -37,6 +37,7 @@
 import { z } from "zod"
 import type { FormSubmitEvent } from "#ui/types"
 import { SIGN_IN } from "~/constants";
+const router = useRouter();
 
 useHead({
   title: "zormor | sign-in",
@@ -55,21 +56,56 @@ const state = reactive({
 
 type Schema = z.output<typeof schema>
 
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   // console.log(event.data)
   const email = event.data.email
   const password = event.data.password
+
   // console.log(typeof email, typeof password)
 
   // make sign in request to database to see if user exists,
   const {mutate} = useMutation(SIGN_IN(email, password))
-  // const response = data.value
+
   const res = await mutate()
   console.log(res)
+  const token = res.data.login.access_token 
+  //sets token to local strage 
+  localStorage.setItem('access_token', token)
+
+  try{
+    if(email ===  res.data.login.user.username){
+      console.log("success")
+      router.push('/zormor')
+    }
+  }catch(err){
+    console.log(err)
+    alert("user not found")
+  }
 
   // if exists get token and store in localstorage
 
   // if not exists, alert user that email is invalid
+
+//   const signInMutation = useMutation(() => SIGN_IN(email, password), {
+//     onSuccess:  (data) => {
+//       // Store the token in local storage
+//       console.log(data)// Assuming the token is in the data object
+//       const router = useRoute();  //using the router
+//       localStorage.setItem('access_token', token)
+//       console.log('Token stored in local storage:', token)
+      
+//       // Redirect to the desired page, e.g., home
+//        router.redirect('/zormor')
+//     },
+//     onError: (error) => {
+//       // Handle error, e.g.
+//  onError: (error) => {
+//       // Handle error, e.g., display a message to the user
+//       console.error('Sign-in failed:', error)
+//       alert('Invalid email or password. Please try again.')
+//     }
+//   }})
 }
 </script>
 

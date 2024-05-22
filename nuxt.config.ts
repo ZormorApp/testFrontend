@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     clients: {
       default: {
         httpEndpoint: "https://testbackend-0wc0.onrender.com/graphql",
+        tokenStorage: 'localStorage',
       },
     },
   },
