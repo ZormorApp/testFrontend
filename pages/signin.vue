@@ -67,11 +67,21 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   // make sign in request to database to see if user exists,
   const {mutate} = useMutation(SIGN_IN(email, password))
 
+ 
   const res = await mutate()
   console.log(res)
-  const token = res.data.login.access_token 
+  // const token = res.data.login.access_token 
+  const user = {
+    access_token:  res.data.login.access_token,
+    username:  res.data.login.user.username,
+    role:  res.data.login.user.role,
+    id:  res.data.login.user.id,
+  }
+
+  console.log(user)
   //sets token to local strage 
-  localStorage.setItem('access_token', token)
+  // localStorage.setItem('access_token', token)
+   localStorage.setItem('user', JSON.stringify(user))
 
   try{
     if(email ===  res.data.login.user.username){

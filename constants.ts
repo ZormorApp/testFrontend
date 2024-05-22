@@ -43,7 +43,8 @@ export const SIGN_IN = (email: string, password: string) => gql`
       access_token,
       user{
         username,
-        role
+        role,
+        id
       }
     }
   }
@@ -57,6 +58,8 @@ export const SIGN_UP = ( email: string, password: string) => gql`
       password: "${password}",
     }){
       username,
+      role,
+      id
     }
   }
 `
