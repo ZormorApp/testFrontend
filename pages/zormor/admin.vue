@@ -150,6 +150,8 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { CREATE_PLACE, SIGN_IN } from "~/constants"
 // const userStore = inject('userStore')
 const storageUser = ref(JSON.parse(localStorage.getItem('user')))
+const toast = useToast()
+
 
 
 useHead({
@@ -318,10 +320,24 @@ const handleSubmit = async () => {
       })
       // const response = data.value
       // const {mutate} = useMutation(SIGN_IN("david@gmail.com", "davidpassword"))
-      const res = await mutate()
-      console.log(res)
+      const attemptPlaceAdd = mutate()
+
+      attemptPlaceAdd.then((addSuccess) => {
+        console.log("Success adding new place:", addSuccess)
+        toast.add({"title": `Successfully added ${placeName.value}.`})
+        placeName.value = ("")
+        placeDescription.value = ("")
+        placeLocation.value = ({ lat: "", long: "", location: "" })
+        openPeriods.value = ([{ days: [], start: "", end: "" }])
+        images.value = ([])
+      })
+      .catch(err => {
+        console.log("error adding place:", err)
+        toast.add({"title": `Sorry something went wrong adding ${placeName.value}. Please try again later`})
+      })
     } catch (err) {
       console.log(err)
+      toast.add({"title": "Sorry something went wrong. Please try again later"})
     }
     
     // console.log(res)

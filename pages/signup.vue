@@ -38,6 +38,7 @@
 import { z } from "zod"
 import type { FormSubmitEvent } from "#ui/types"
 import { SIGN_IN, SIGN_UP } from "~/constants";
+const toast = useToast()
 
 const errorMsg = ref("")
 
@@ -81,18 +82,19 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   try {
     const {mutate} = useMutation(SIGN_UP(email, password))
-    const signUpPromise = mutate()
+    const attemptSignUp = mutate()
     // mutate().then(res => {
     //   console.log(res)
     // }).catch(err => {
     //   console.log(err)
     // })
-    signUpPromise.then(res => {
+    attemptSignUp.then(res => {
       console.log(res)
       const {mutate} = useMutation(SIGN_IN(email, password)) 
-      const signInPromise = mutate()
+      const attemptSignIn = mutate()
+      toast.add({"title": `Welcome ${email} to Zormor!`})
 
-      signInPromise.then(async (signInRes: any) => {
+      attemptSignIn.then(async (signInRes: any) => {
         const user = {
           access_token:  signInRes.data.login.access_token,
           username:  signInRes.data.login.user.username,
@@ -101,13 +103,13 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         }
         localStorage.setItem('user', JSON.stringify(user))
         console.log("Sign in successful")
+        toast.add({"title": `Successfully signed into ${user.username}`})
         reloadNuxtApp({path: '/zormor'})
       })
       .catch((signInErr: any) => {
-        console.log(signInErr.message)
-        console.log("Sorry, something went wrong signing you in. Please try again later")
+        console.log("Sign in error:", signInErr.message)
+        toast.add({"title": "Sorry, something went wrong signing you in. Please try again later"})
       })
-
     })
     .catch(err => {
       console.log(err.message)
@@ -116,12 +118,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     // console.log(res)
   } catch(err) {
     console.log(err)
+    toast.add({ title: "Sorry, something went wrong. Please try again later" })
   }
-
-
-
-
-  
 }
 
 
