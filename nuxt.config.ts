@@ -21,11 +21,12 @@ export default defineNuxtConfig({
     "@nuxtjs/apollo",
     "nuxt-graphql-request",
   ],
+  ssr: false,
   apollo: {
     clients: {
       default: {
         httpEndpoint: "https://testbackend-0wc0.onrender.com/graphql",
-        tokenStorage: 'localStorage',
+        // tokenStorage: 'localStorage',
       },
     },
   },

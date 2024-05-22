@@ -38,6 +38,8 @@ import { z } from "zod"
 import type { FormSubmitEvent } from "#ui/types"
 import { SIGN_IN } from "~/constants";
 const router = useRouter();
+// const storageUser = ref(useLoggedUserStore().cred)
+// const storageUser = useLoggedUserStore().cred
 
 useHead({
   title: "zormor | sign-in",
@@ -68,7 +70,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   const {mutate} = useMutation(SIGN_IN(email, password))
 
  
-  const res = await mutate()
+  const res: any = await mutate()
   console.log(res)
   // const token = res.data.login.access_token 
   const user = {
@@ -82,11 +84,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   //sets token to local strage 
   // localStorage.setItem('access_token', token)
    localStorage.setItem('user', JSON.stringify(user))
+  //  storageUser.cred = user
+  //  useLoggedUserStore().cred
 
   try{
     if(email ===  res.data.login.user.username){
       console.log("success")
-      router.push('/zormor')
+      reloadNuxtApp({path: '/zormor'})
+      // router.push('/zormor')
     }
   }catch(err){
     console.log(err)

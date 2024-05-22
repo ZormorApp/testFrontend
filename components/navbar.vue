@@ -53,6 +53,7 @@ const handleSignOut = async () => {
   for (const prop in storageUser.value) {
     // console.log(prop)
     if (storageUser.value.hasOwnProperty(prop)) {
+      console.log(prop)
       storageUser.value[prop] = ""
     }
   }
@@ -77,6 +78,16 @@ const disableSideMenu = () => {
     sideMenuOpen.value = false
   }
 }
+
+const count = ref(0)
+
+// watch(
+//   newCheck.value,
+//   () => {
+//     count.value += 1
+//   },
+//   { deep: true }
+// )
 
 onMounted(() => {
   window.addEventListener("resize", disableSideMenu)
