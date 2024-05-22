@@ -308,10 +308,11 @@ const handleSubmit = async () => {
     )
     // placesStore.addPlace(payload)
     try {
+      const {access_token} = JSON.parse(localStorage.getItem('user'))
       const {mutate} = useMutation(CREATE_PLACE(payload), {
         context: {
           headers: {
-            "Authorization" :"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluQGdtYWlsLmNvbSIsInN1YiI6ImQ0Y2RiMTJlLTVjZWUtNDhmYy05MDQ4LWQxYzAxYmQzN2JjYSIsImlhdCI6MTcxNjMxNDE5NiwiZXhwIjoxNzE2MzUwMTk2fQ.Sja4Fu27Yghf5Qm1h-Il3RgT7YsG6hXxWbIcLsRT8fU"
+            "Authorization" :`Bearer ${access_token}`
           }
         }
       })
