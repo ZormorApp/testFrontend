@@ -1,6 +1,7 @@
 <template>
   <NuxtLayout>
     <NuxtPage />
+    <UNotifications :timeout="120000" class="fixed top-8 right-8 h-max pointer-events-none" />
   </NuxtLayout>
 </template>
 

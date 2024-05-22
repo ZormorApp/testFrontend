@@ -15,6 +15,7 @@
           class="input"
           type="password"
           placeholder="enter your password" />
+        <ErrorMessage :message="errMsg"/>
         <button type="submit" class="btn hover:bg-orange-400 font-bold">
           Sign in
         </button>
@@ -37,9 +38,11 @@
 import { z } from "zod"
 import type { FormSubmitEvent } from "#ui/types"
 import { SIGN_IN } from "~/constants";
-const router = useRouter();
+const toast = useToast()
 // const storageUser = ref(useLoggedUserStore().cred)
 // const storageUser = useLoggedUserStore().cred
+
+const errMsg = ref("")
 
 useHead({
   title: "zormor | sign-in",
@@ -66,36 +69,31 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   // console.log(typeof email, typeof password)
 
-  // make sign in request to database to see if user exists,
-  const {mutate} = useMutation(SIGN_IN(email, password))
+  try {
+    // make sign in request to database to see if user exists,
+    const {mutate} = useMutation(SIGN_IN(email, password)) 
+    const attempSignIn: any = mutate()
 
- 
-  const res: any = await mutate()
-  console.log(res)
-  // const token = res.data.login.access_token 
-  const user = {
-    access_token:  res.data.login.access_token,
-    username:  res.data.login.user.username,
-    role:  res.data.login.user.role,
-    id:  res.data.login.user.id,
-  }
-
-  console.log(user)
-  //sets token to local strage 
-  // localStorage.setItem('access_token', token)
-   localStorage.setItem('user', JSON.stringify(user))
-  //  storageUser.cred = user
-  //  useLoggedUserStore().cred
-
-  try{
-    if(email ===  res.data.login.user.username){
-      console.log("success")
+    attempSignIn.then((success: any) => {
+      const user = {
+        access_token:  success.data.login.access_token,
+        username:  success.data.login.user.username,
+        role:  success.data.login.user.role,
+        id:  success.data.login.user.id,
+      }
+      toast.add({ title: `Successfully signed in as ${email}` })
+      console.log("success", success)
+      localStorage.setItem('user', JSON.stringify(user))
       reloadNuxtApp({path: '/zormor'})
-      // router.push('/zormor')
-    }
-  }catch(err){
-    console.log(err)
-    alert("user not found")
+    })
+    .catch((err: any) => {
+      errMsg.value = 'Wrong email or password'
+      console.log("Error:", err.message)
+    })
+  } catch(err: any){
+    console.log("Error:", err)
+    // alert("user not found")
+    toast.add({ title: "Sorry, something went wrong. Please try again later." })
   }
 
   // if exists get token and store in localstorage
